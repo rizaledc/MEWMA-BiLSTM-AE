@@ -160,13 +160,13 @@ Dynamic weighting (alpha=0.8, boost=0.25) juga dieksplorasi namun tidak konsiste
 
 ### 4.1 MEWMA Layer 1 Scores
 
-![MEWMA T2 Scores](figures/fig05_mewma_scores.png)
+![MEWMA T2 Scores](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%202/artifacts/fig05_mewma_scores.png)
 
 *Figure 1: MEWMA T2 scores pada validation (atas) dan test (bawah). Garis putus-putus = threshold. Bintang merah = CRITICAL events. Log scale digunakan karena range T2 sangat lebar. MEWMA mendeteksi 1/1 CRITICAL di validation dan 3/4 di test.*
 
 ### 4.2 BiLSTM-AE Layer 2 Scores
 
-![BiLSTM-AE Reconstruction Error](figures/fig06_bilstm_scores.png)
+![BiLSTM-AE Reconstruction Error](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%202/artifacts/fig06_bilstm_scores.png)
 
 *Figure 2: BiLSTM-AE reconstruction error. Atas: training curve (MSE loss konvergen tanpa overfit). Tengah: validation scores. Bawah: test scores. BiLSTM mendeteksi CRITICAL events yang berbeda dari MEWMA — fire event (Mei) sangat menonjol.*
 
@@ -184,13 +184,13 @@ Refined label mengecualikan WARNING yang disebabkan hanya oleh siklus tangki air
 
 ### 4.4 ROC Curves
 
-![ROC Curves](figures/fig07_roc_curves.png)
+![ROC Curves](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%202/artifacts/fig07_roc_curves.png)
 
 *Figure 3: ROC curves pada test set. (a) Refined label — Hybrid Fusion (merah) berada di atas kedua standalone components-nya. (b) Proxy label — menunjukkan dampak noisy label terhadap AUC semua metode.*
 
 ### 4.5 CRITICAL Event Case Study
 
-![Critical Case Study](figures/fig08_critical_case_study.png)
+![Critical Case Study](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%202/artifacts/fig08_critical_case_study.png)
 
 *Figure 4: Anomaly score response di sekitar 4 CRITICAL events pada test set. Setiap panel menunjukkan window 24 jam sekitar event. Garis vertikal merah = waktu event. Terlihat jelas bagaimana MEWMA dan BiLSTM saling melengkapi.*
 
