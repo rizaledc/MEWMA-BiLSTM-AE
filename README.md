@@ -95,6 +95,7 @@ statsmodels >= 0.14
 ## Authors
 
 - Rizal Wahyu Pratama
+- Khulika Malkan
 
 ## License
 
