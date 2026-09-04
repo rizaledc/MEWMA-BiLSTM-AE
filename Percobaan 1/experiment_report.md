@@ -28,13 +28,13 @@ No expert-annotated ground truth exists. The column `is_anomaly_proxy` is a syst
 
 31 continuous features were analyzed. All values fell within physically plausible domain ranges (indoor temperature 23–31.5°C, voltage 213–229V, grid frequency 49.86–50.14 Hz, etc.). Several features showed bimodal distributions driven by diurnal cycles (lux, building occupancy, facility power), while safety-related features (gas_raw, smoke, flame) were near-zero dominated with extreme tails during anomaly events.
 
-![Distribution of continuous features](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_01_distributions.png)
+![Distribution of continuous features](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_01_distributions.png)
 
 ### 2.2 Temporal patterns
 
 Strong diurnal and weekly patterns were identified across multiple subsystems. Temperature peaks at midday, lux follows a sharp day/night cycle, building occupancy drops on weekends, and power consumption tracks occupancy closely. These patterns justify the use of temporal models (BiLSTM-AE) for learning normal behavior.
 
-![Temporal patterns heatmap](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_02_temporal_patterns.png)
+![Temporal patterns heatmap](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_02_temporal_patterns.png)
 
 Autocorrelation analysis confirmed three groups of features:
 
@@ -50,7 +50,7 @@ This grouping informs the hybrid architecture: BiLSTM-AE is well-suited for feat
 
 8 feature pairs with |r| > 0.80 were identified. Three pairs are perfectly correlated (r = 1.0) due to physical relationships (power ↔ energy, flow ↔ volume). These redundant features, along with two monotonically increasing cumulative columns, were removed before modeling.
 
-![Correlation matrix](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_04_correlation_matrix.png)
+![Correlation matrix](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_04_correlation_matrix.png)
 
 ### 2.4 Anomaly taxonomy
 
@@ -65,7 +65,7 @@ Since the binary proxy label is dominated by a single operational event (low tan
 
 CRITICAL events include fire confirmation (3), water leak with valve closure (4), panic button activation (3), and CCTV-detected intrusion/fire (4). These are the anomalies that matter most for safety.
 
-![Feature distributions across anomaly tiers](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_05_feature_by_tier.png)
+![Feature distributions across anomaly tiers](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_05_feature_by_tier.png)
 
 Effect size analysis shows that during CRITICAL events, `node02_gas_raw` deviates 6.67 standard deviations from its normal mean — a strong discriminative signal. MULTI_NODE_WARNING events show simultaneous shifts in temperature, humidity, toner level, and lux.
 
@@ -73,7 +73,7 @@ Effect size analysis shows that during CRITICAL events, `node02_gas_raw` deviate
 
 Anomaly rate is higher during daytime hours (peak 54% at 1 PM vs 35% at 4 AM), with a spike in March 2026. CRITICAL events are distributed roughly evenly across the 8-month period without seasonal clustering.
 
-![Anomaly temporal distribution](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_06_anomaly_temporal.png)
+![Anomaly temporal distribution](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_06_anomaly_temporal.png)
 
 ---
 
@@ -108,7 +108,7 @@ Scalers (StandardScaler for MEWMA, MinMaxScaler for BiLSTM-AE) are fit exclusive
 
 PCA was applied to the StandardScaled training data for dimensionality reduction. 27 components retain 95.9% of total variance, reducing the feature space from 61 to 27 dimensions for the MEWMA layer.
 
-![PCA scree plot](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_07_pca_scree.png)
+![PCA scree plot](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_07_pca_scree.png)
 
 The top components align with interpretable subsystems: PC1 (22.1%) captures diurnal cycles (temperature, lux), PC2 (9.8%) captures daily activity (power, entries, study room), and PC5 (3.9%) captures infrastructure connectivity (MQTT status, packet loss).
 
@@ -120,7 +120,7 @@ The top components align with interpretable subsystems: PC1 (22.1%) captures diu
 
 MEWMA (Multivariate Exponentially Weighted Moving Average) operates on PCA-reduced data to detect statistical mean shifts in the multivariate feature space. The smoothing parameter λ = 0.30 was selected after testing five values (0.05, 0.10, 0.15, 0.20, 0.30). The control limit h = 86.22 is set at the 95th percentile of training T² statistics.
 
-![MEWMA control chart](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_08_mewma_chart.png)
+![MEWMA control chart](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_08_mewma_chart.png)
 
 ### 4.2 Layer 2: BiLSTM autoencoder
 
@@ -141,11 +141,11 @@ The BiLSTM-AE learns to reconstruct windows of normal data. Anomalies are detect
 
 Training converged in 41 epochs (EarlyStopping, patience=10) with best validation loss = 0.018. The threshold is set at the 95th percentile of training reconstruction error.
 
-![Training curves](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_09_training_curves.png)
+![Training curves](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_09_training_curves.png)
 
 Per-feature reconstruction error analysis reveals that during CRITICAL events, safety-related features show 15–18x higher reconstruction error than normal: `node02_panic` (18.3x), `node02_siren` (17.8x), `node02_smoke` (17.4x), `cctv_visual_fire` (17.1x). This confirms the autoencoder successfully learned that activation of these features is anomalous.
 
-![Per-feature reconstruction error during CRITICAL events](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_11_per_feature_error.png)
+![Per-feature reconstruction error during CRITICAL events](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_11_per_feature_error.png)
 
 ### 4.3 Layer 3: Dynamic weighted fusion
 
@@ -159,7 +159,7 @@ The fusion engine combines normalized MEWMA T² scores and BiLSTM-AE reconstruct
 
 A critical finding: window size dramatically impacts BiLSTM-AE performance. Since anomalies in this dataset are transient (point anomalies lasting 1–2 timesteps), shorter windows allow the anomaly signal to dominate the reconstruction error rather than being diluted by surrounding normal timesteps.
 
-![Window size sensitivity](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_18_window_sensitivity.png)
+![Window size sensitivity](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_18_window_sensitivity.png)
 
 | Window | Hours | Fusion AUC-ROC | Fusion AUC-PR |
 |---|---|---|---|
@@ -198,7 +198,7 @@ Thresholds are optimized for F1-score using the proxy labels. Metrics reported: 
 
 ★ Proposed method
 
-![Final model comparison — ROC and PR curves](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Pict/fig_16_final_comparison.png)
+![Final model comparison — ROC and PR curves](https://github.com/rizaledc/MEWMA-BiLSTM-AE/blob/main/Percobaan%201/Pict/fig_16_final_comparison.png)
 
 ### 5.3 Key findings
 
@@ -244,7 +244,7 @@ Thresholds are optimized for F1-score using the proxy labels. Metrics reported: 
 | Pandas | 2.2.3 |
 | Random seed | 42 (all stochastic operations) |
 | Hardware | Google Colab, Tesla T4 GPU |
-| Training time | ~5 min (BiLSTM-AE, ws=6, 41 epochs) |
+| Training time | 5 min (BiLSTM-AE, ws=6, 41 epochs) |
 
 ---
 
